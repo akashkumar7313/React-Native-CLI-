@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "666856620873",
+    "project_id": "react-native-demo-94ca6",
+    "storage_bucket": "react-native-demo-94ca6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:666856620873:android:975a04f6eb6116ac51d098",
+        "android_client_info": {
+          "package_name": "com.akash.myapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCt5VfunABAtRWIP_4gqD-Kx6O1Pif_Zhk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

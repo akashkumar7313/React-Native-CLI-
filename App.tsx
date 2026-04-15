@@ -1,45 +1,34 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useEffect } from 'react';
+import { View, Text, Alert } from 'react-native';
+import { getApp } from '@react-native-firebase/app';
+import { getMessaging, getToken } from '@react-native-firebase/messaging';
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
-import {
-  SafeAreaProvider,
-  useSafeAreaInsets,
-} from 'react-native-safe-area-context';
+const App = () => {
+  useEffect(() => {
+    const getTokenModular = async () => {
+      try {
+        // ✅ Modular API - Auto-read from google-services.json
+        const app = getApp(); // Default app auto-initialized from JSON
+        const messaging = getMessaging(app);
+        const token = await getToken(messaging);
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+        console.log("✅ FCM Token (Modular):", token);
+        Alert.alert("Success", "Firebase connected with Modular API!");
+      } catch (error: any) {
+        console.log("❌ Error:", error?.message);
+        Alert.alert("Error", error?.message);
+      }
+    };
 
-  return (
-    <SafeAreaProvider>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <AppContent />
-    </SafeAreaProvider>
-  );
-}
-
-function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
+    getTokenModular();
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Firebase Modular API ✅</Text>
+      <Text style={{ marginTop: 10 }}>Check console for token</Text>
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+};
 
 export default App;
