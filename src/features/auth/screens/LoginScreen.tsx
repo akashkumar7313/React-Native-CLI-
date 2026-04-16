@@ -5,195 +5,86 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
   Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
+  Switch,
 } from 'react-native';
-import Button from '../../../shared/components/ui/Button/Button';
-import { isValidEmail } from '../../../utils/helpers';
+import { useAuth } from '../hooks/useAuth';
+import { useTranslation } from 'react-i18next';
+import { ROUTES } from '../../../core/navigation/routes';
+import { useTheme } from '../../../core/i18n/ThemeProvider';
 
 const LoginScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const { login, isLoading } = useAuth();
+  const { theme, toggleTheme, isDarkMode } = useTheme();
+  const { t, i18n } = useTranslation();
 
   const handleLogin = async () => {
-    // Validation
     if (!email || !password) {
       Alert.alert('Error', 'Please fill all fields');
       return;
     }
+    await login(email, password);
+  };
 
-    if (!isValidEmail(email)) {
-      Alert.alert('Error', 'Please enter valid email');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      // TODO: Call your login API here
-      console.log('Login:', { email, password });
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(() => resolve(null), 1500));
-      
-      Alert.alert('Success', 'Login successful!');
-      // navigation.replace('Home');
-    } catch (error: any) {
-      Alert.alert('Error', error.message || 'Login failed');
-    } finally {
-      setLoading(false);
-    }
+  const toggleLanguage = () => {
+    i18n.changeLanguage(i18n.language === 'en' ? 'hi' : 'en');
   };
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Welcome Back! 👋</Text>
-          <Text style={styles.subtitle}>Sign in to continue</Text>
-        </View>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <Text style={[styles.title, { color: theme.colors.text }]}>{t('welcome')}</Text>
 
-        <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            placeholderTextColor="#999"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
+      <View style={styles.switchContainer}>
+        <Text style={{ color: theme.colors.text }}>Toggle Theme</Text>
+        <Switch value={isDarkMode} onValueChange={toggleTheme} />
+        <TouchableOpacity onPress={toggleLanguage} style={styles.langButton}>
+          <Text style={{ color: theme.colors.primary }}>{i18n.language.toUpperCase()}</Text>
+        </TouchableOpacity>
+      </View>
 
-          <View style={styles.passwordContainer}>
-            <TextInput
-              style={[styles.input, styles.passwordInput]}
-              placeholder="Password"
-              placeholderTextColor="#999"
-              value={password}
-              onChangeText={setPassword}
-              secureTextEntry={!showPassword}
-            />
-            <TouchableOpacity
-              style={styles.eyeButton}
-              onPress={() => setShowPassword(!showPassword)}
-            >
-              <Text>{showPassword ? '👁️' : '🔒'}</Text>
-            </TouchableOpacity>
-          </View>
-
-          <TouchableOpacity
-            style={styles.forgotButton}
-            onPress={() => navigation.navigate('ForgotPassword')}
-          >
-            <Text style={styles.forgotText}>Forgot Password?</Text>
-          </TouchableOpacity>
-
-          <Button
-            title="Login"
-            onPress={handleLogin}
-            loading={loading}
-            style={styles.loginButton}
-          />
-
-          <View style={styles.signupContainer}>
-            <Text style={styles.signupText}>Don't have an account? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
-              <Text style={styles.signupLink}>Sign Up</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      <TextInput
+        style={[styles.input, { backgroundColor: theme.colors.card, color: theme.colors.text, borderColor: theme.colors.border }]}
+        placeholder={t('email_placeholder')}
+        placeholderTextColor={theme.colors.secondary}
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+      <TextInput
+        style={[styles.input, { backgroundColor: theme.colors.card, color: theme.colors.text, borderColor: theme.colors.border }]}
+        placeholder={t('password_placeholder')}
+        placeholderTextColor={theme.colors.secondary}
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: theme.colors.primary }]}
+        onPress={handleLogin}
+        disabled={isLoading}
+      >
+        {isLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>{t('login')}</Text>}
+      </TouchableOpacity>
+      <TouchableOpacity onPress={() => navigation.navigate(ROUTES.SIGNUP)}>
+        <Text style={[styles.linkText, { color: theme.colors.primary }]}>{t('no_account')}</Text>
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  scrollContainer: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    padding: 20,
-  },
-  header: {
-    marginBottom: 40,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#333',
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginTop: 10,
-  },
-  form: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 20,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  input: {
-    backgroundColor: '#f8f9fa',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#e9ecef',
-    fontSize: 16,
-  },
-  passwordContainer: {
-    position: 'relative',
-  },
-  passwordInput: {
-    paddingRight: 50,
-  },
-  eyeButton: {
-    position: 'absolute',
-    right: 15,
-    top: 15,
-  },
-  forgotButton: {
-    alignSelf: 'flex-end',
-    marginBottom: 20,
-  },
-  forgotText: {
-    color: '#007AFF',
-    fontSize: 14,
-  },
-  loginButton: {
-    marginTop: 10,
-  },
-  signupContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  signupText: {
-    color: '#666',
-    fontSize: 14,
-  },
-  signupLink: {
-    color: '#007AFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
+  container: { flex: 1, justifyContent: 'center', padding: 20 },
+  title: { fontSize: 32, fontWeight: 'bold', marginBottom: 30, textAlign: 'center' },
+  switchContainer: { flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', marginBottom: 20 },
+  langButton: { padding: 10 },
+  input: { padding: 15, borderRadius: 10, marginBottom: 15, borderWidth: 1 },
+  button: { padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 10 },
+  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  linkText: { marginTop: 20, textAlign: 'center' },
 });
 
 export default LoginScreen;

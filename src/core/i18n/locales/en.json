@@ -1,0 +1,8 @@
+{
+    "welcome": "Welcome Back",
+    "login": "Login",
+    "signup": "Signup",
+    "email_placeholder": "Email",
+    "password_placeholder": "Password",
+    "no_account": "Don't have an account? Signup"
+}
