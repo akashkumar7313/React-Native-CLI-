@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import firebaseService from '../lib/firebase/messaging';
+import { FirebaseService } from '../lib/firebase/messaging';
 import { Alert } from 'react-native';
 
 export const useFirebaseNotification = () => {
@@ -12,10 +12,10 @@ export const useFirebaseNotification = () => {
 
   const initialize = async () => {
     try {
-      const token = await firebaseService.getToken();
+      const token = await FirebaseService.getToken();
       setFcmToken(token);
 
-      firebaseService.onMessage((message) => {
+      FirebaseService.onMessage((message) => {
         console.log('📨 New message:', message);
         Alert.alert(
           message.notification?.title || 'Notification',

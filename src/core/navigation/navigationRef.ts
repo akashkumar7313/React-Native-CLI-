@@ -1,14 +1,16 @@
 // src/core/navigation/navigationRef.ts
 import { createNavigationContainerRef } from '@react-navigation/native';
 
-// Define navigation params type
-type RootStackParamList = {
-  Home: undefined;
-  Login: undefined;
-  Signup: undefined;
-  Profile: { userId: string };
-  Product: { id: string; name: string };
-  // Add more screens as needed
+import { ROUTES } from './routes';
+
+// Define navigation params type based on your ROUTES
+export type RootStackParamList = {
+  [ROUTES.LOGIN]: undefined;
+  [ROUTES.SIGNUP]: undefined;
+  [ROUTES.HOME]: undefined;
+  [ROUTES.PROFILE]: { userId: string };
+  // Add other screens and their params here
+  [key: string]: object | undefined;
 };
 
 export const navigationRef = createNavigationContainerRef<RootStackParamList>();
@@ -16,11 +18,11 @@ export const navigationRef = createNavigationContainerRef<RootStackParamList>();
 // Navigate to any screen from anywhere
 export function navigate<RouteName extends keyof RootStackParamList>(
   name: RouteName,
-  params?: RootStackParamList[RouteName]
+  params?: RootStackParamList[RouteName],
 ) {
   if (navigationRef.isReady()) {
-    // @ts-ignore - TypeScript workaround
-    navigationRef.navigate(name, params);
+    // The 'as any' is a safe workaround for a known issue with dynamic route names in TypeScript.
+    navigationRef.navigate(name as any, params as any);
   }
 }
 
@@ -32,11 +34,11 @@ export function goBack() {
 }
 
 // Reset navigation
-export function reset(name: keyof RootStackParamList) {
+export function reset(name: keyof RootStackParamList, params?: RootStackParamList[typeof name]) {
   if (navigationRef.isReady()) {
     navigationRef.reset({
       index: 0,
-      routes: [{ name } as any],
+      routes: [{ name: name as string, params }],
     });
   }
 }
