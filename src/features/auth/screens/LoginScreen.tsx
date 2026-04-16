@@ -12,7 +12,7 @@ import {
 import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from 'react-i18next';
 import { ROUTES } from '../../../core/navigation/routes';
-import { useTheme } from '../../../core/i18n/ThemeProvider';
+import { useTheme } from '../../../shared/assets/theme/ThemeProvider';
 
 const LoginScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');

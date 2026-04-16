@@ -10,7 +10,7 @@ import { getToken } from '../core/storage/authStorageService';
 import { rehydrateAuth } from '../features/auth/redux/authSlice';
 import '../core/i18n/i18n';
 import { StatusBar } from 'react-native';
-import { ThemeProvider, useTheme } from '../core/i18n/ThemeProvider';
+import { ThemeProvider, useTheme } from '../shared/assets/theme/ThemeProvider';
 
 const App = () => {
   useEffect(() => {
