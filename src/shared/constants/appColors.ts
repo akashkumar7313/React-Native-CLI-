@@ -1,5 +1,6 @@
+
 // Colors (Theme)
-export const COLORS = {
+export const APP_COLORS = {
     primary: '#007AFF',
     secondary: '#6C757D',
     success: '#28A745',

@@ -9,8 +9,8 @@ import {
     DEFAULT_HEADERS,
     STATUS_CODES,
     ERROR_MESSAGES,
-} from './ApiConfig';
-import { ApiResponse } from './ApiResponse';
+} from './apiConfig';
+import { ApiResponse } from './apiResponse';
 import { addApiLogInterceptor } from './interceptors/apiLogInterceptor';
 
 /**

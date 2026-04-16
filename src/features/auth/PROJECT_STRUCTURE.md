@@ -1,6 +1,6 @@
 # React Native Project Structure Documentation
 
-This document outlines a robust and scalable folder structure for a React Native application. It separates concerns, making the codebase easier to manage, test, and scale.
+यह दस्तावेज़ आपके `MyApp` एप्लिकेशन की वर्तमान फ़ाइल और फ़ोल्डर संरचना का वर्णन करता है। यह संरचना मॉड्यूलरिटी पर केंद्रित है, जिसमें `core`, `features`, और `shared` डायरेक्टरी का उपयोग किया गया है।
 
 ```
 MyAwesomeApp/
