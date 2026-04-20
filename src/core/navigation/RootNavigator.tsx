@@ -2,6 +2,9 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { LoginScreen } from '../../features/auth';
+import SplashScreen from '../../features/splash/screens/SplashScreen';
+import OnboardingScreen from '../../features/onboarding/screens/OnboardingScreen';
+import LanguageSelectionScreen from '../../features/language/screens/LanguageSelectionScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -59,7 +62,25 @@ const styles = StyleSheet.create({
 
 const RootNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
+      <Stack.Screen
+        name="Splash"
+        // eslint-disable-next-line react/no-unstable-nested-components
+        children={({ navigation }) => (
+          <SplashScreen onFinish={() => navigation.replace('LanguageSelection')} />
+        )}
+        options={{ title: 'Splash Screen' }}
+      />
+      <Stack.Screen
+        name="LanguageSelection"
+        component={LanguageSelectionScreen}
+        options={{ title: 'Language Selection Screen' }}
+      />
+      <Stack.Screen
+        name="Onboarding"
+        component={OnboardingScreen}
+        options={{ title: 'Onboarding Screen' }}
+      />
       <Stack.Screen
         name="Login"
         component={LoginScreen}

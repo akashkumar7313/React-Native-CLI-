@@ -41,12 +41,12 @@ const AppContent = () => {
   const navigationTheme = {
     dark: isDarkMode,
     colors: {
-      primary: theme.colors.primary,
-      background: theme.colors.background,
-      card: theme.colors.card,
-      text: theme.colors.text,
-      border: theme.colors.border,
-      notification: theme.colors.primary,
+      primary: theme.APP_COLORS.primary,
+      background: theme.APP_COLORS.background,
+      card: theme.APP_COLORS.card,
+      text: theme.APP_COLORS.text,
+      border: theme.APP_COLORS.border,
+      notification: theme.APP_COLORS.primary,
     },
     // 🔥 Add fonts property (required by React Navigation)
     fonts: {

@@ -1,5 +1,7 @@
 // src/shared/assets/theme/theme.ts
-import { COLORS } from "../colors/colors";
+
+import { APP_COLORS } from "../constants";
+
 
 export const spacing = {
     xs: 4,
@@ -33,8 +35,8 @@ export const typography = {
     },
 };
 
-// ✅ React Navigation Theme Colors Type
-export type NavigationThemeColors = {
+// ✅ React Navigation Theme APP_COLORS Type
+export type NavigationThemeAPP_COLORS = {
     primary: string;
     background: string;
     card: string;
@@ -43,8 +45,8 @@ export type NavigationThemeColors = {
     notification: string;  // 🔥 Required by React Navigation
 };
 
-// ✅ Your App Theme Colors
-export type AppColors = {
+// ✅ Your App Theme APP_COLORS
+export type AppAPP_COLORS = {
     background: string;
     text: string;
     card: string;
@@ -65,7 +67,7 @@ export type AppColors = {
 export type Theme = {
     spacing: typeof spacing;
     typography: typeof typography;
-    colors: AppColors;
+    APP_COLORS: AppAPP_COLORS;
     dark: boolean;
     fonts: {
         regular: string;
@@ -76,7 +78,7 @@ export type Theme = {
     // 🔥 Navigation theme getter
     getNavigationTheme: () => {
         dark: boolean;
-        colors: NavigationThemeColors;
+        APP_COLORS: NavigationThemeAPP_COLORS;
     };
 };
 
@@ -94,33 +96,33 @@ const baseTheme = {
 export const lightTheme: Theme = {
     ...baseTheme,
     dark: false,
-    colors: {
-        ...COLORS,
-        background: COLORS.light,
-        text: COLORS.dark,
-        card: COLORS.white,
+    APP_COLORS: {
+        ...APP_COLORS,
+        background: APP_COLORS.light,
+        text: APP_COLORS.dark,
+        card: APP_COLORS.white,
         border: '#e9ecef',
-        primary: COLORS.primary,
-        secondary: COLORS.secondary,
-        success: COLORS.success,
-        danger: COLORS.danger,
-        warning: COLORS.warning,
-        info: COLORS.info,
-        dark: COLORS.dark,
-        light: COLORS.light,
-        white: COLORS.white,
-        black: COLORS.black,
+        primary: APP_COLORS.primary,
+        secondary: APP_COLORS.secondary,
+        success: APP_COLORS.success,
+        danger: APP_COLORS.danger,
+        warning: APP_COLORS.warning,
+        info: APP_COLORS.info,
+        dark: APP_COLORS.dark,
+        light: APP_COLORS.light,
+        white: APP_COLORS.white,
+        black: APP_COLORS.black,
     },
     // 🔥 Add this method
     getNavigationTheme: () => ({
         dark: false,
-        colors: {
-            primary: COLORS.primary,
-            background: COLORS.light,
-            card: COLORS.white,
-            text: COLORS.dark,
+        APP_COLORS: {
+            primary: APP_COLORS.primary,
+            background: APP_COLORS.light,
+            card: APP_COLORS.white,
+            text: APP_COLORS.dark,
             border: '#e9ecef',
-            notification: COLORS.primary,  // 🔥 Required property
+            notification: APP_COLORS.primary,  // 🔥 Required property
         },
     }),
 };
@@ -128,33 +130,33 @@ export const lightTheme: Theme = {
 export const darkTheme: Theme = {
     ...baseTheme,
     dark: true,
-    colors: {
-        ...COLORS,
-        background: COLORS.dark,
-        text: COLORS.light,
+    APP_COLORS: {
+        ...APP_COLORS,
+        background: APP_COLORS.dark,
+        text: APP_COLORS.light,
         card: '#424242',
         border: '#616161',
-        primary: COLORS.primary,
-        secondary: COLORS.secondary,
-        success: COLORS.success,
-        danger: COLORS.danger,
-        warning: COLORS.warning,
-        info: COLORS.info,
-        dark: COLORS.dark,
-        light: COLORS.light,
-        white: COLORS.white,
-        black: COLORS.black,
+        primary: APP_COLORS.primary,
+        secondary: APP_COLORS.secondary,
+        success: APP_COLORS.success,
+        danger: APP_COLORS.danger,
+        warning: APP_COLORS.warning,
+        info: APP_COLORS.info,
+        dark: APP_COLORS.dark,
+        light: APP_COLORS.light,
+        white: APP_COLORS.white,
+        black: APP_COLORS.black,
     },
     // 🔥 Add this method
     getNavigationTheme: () => ({
         dark: true,
-        colors: {
-            primary: COLORS.primary,
-            background: COLORS.dark,
+        APP_COLORS: {
+            primary: APP_COLORS.primary,
+            background: APP_COLORS.dark,
             card: '#424242',
-            text: COLORS.light,
+            text: APP_COLORS.light,
             border: '#616161',
-            notification: COLORS.primary,  // 🔥 Required property
+            notification: APP_COLORS.primary,  // 🔥 Required property
         },
     }),
 };

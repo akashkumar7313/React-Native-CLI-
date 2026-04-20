@@ -31,5 +31,6 @@ export const APP_CONSTANTS = {
         THEME: '@theme_preference',
         LANGUAGE: '@language',
         CART: '@cart_data',
+        ONBOARDING_COMPLETED: '@onboarding_completed',
     },
 };

@@ -1,13 +1,14 @@
 // src/shared/utils/validators.ts
 
+import { REGEX } from '../constants/regex';
+
 /**
  * ============================================
  * EMAIL VALIDATION
  * ============================================
  */
 export const isValidEmail = (email: string): boolean => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
+    return REGEX.EMAIL.test(email);
 };
 
 /**
@@ -16,8 +17,7 @@ export const isValidEmail = (email: string): boolean => {
  * ============================================
  */
 export const isValidPhone = (phone: string): boolean => {
-    const phoneRegex = /^[6-9]\d{9}$/;
-    return phoneRegex.test(phone);
+    return REGEX.PHONE.test(phone);
 };
 
 /**
@@ -30,9 +30,7 @@ export const isValidPassword = (password: string): boolean => {
 };
 
 export const isStrongPassword = (password: string): boolean => {
-    // At least 8 chars, 1 uppercase, 1 lowercase, 1 number
-    const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
-    return strongRegex.test(password);
+    return REGEX.STRONG_PASSWORD.test(password);
 };
 
 /**
@@ -50,8 +48,7 @@ export const isValidName = (name: string): boolean => {
  * ============================================
  */
 export const isValidPincode = (pincode: string): boolean => {
-    const pincodeRegex = /^[1-9][0-9]{5}$/;
-    return pincodeRegex.test(pincode);
+    return REGEX.PINCODE.test(pincode);
 };
 
 /**
@@ -60,8 +57,7 @@ export const isValidPincode = (pincode: string): boolean => {
  * ============================================
  */
 export const isValidUrl = (url: string): boolean => {
-    const urlRegex = /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/;
-    return urlRegex.test(url);
+    return REGEX.URL.test(url);
 };
 
 /**
@@ -70,8 +66,7 @@ export const isValidUrl = (url: string): boolean => {
  * ============================================
  */
 export const isValidPan = (pan: string): boolean => {
-    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
-    return panRegex.test(pan);
+    return REGEX.PAN.test(pan);
 };
 
 /**
@@ -80,8 +75,43 @@ export const isValidPan = (pan: string): boolean => {
  * ============================================
  */
 export const isValidGST = (gst: string): boolean => {
-    const gstRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/;
-    return gstRegex.test(gst);
+    return REGEX.GST.test(gst);
+};
+
+/**
+ * ============================================
+ * IFSC CODE VALIDATION
+ * ============================================
+ */
+export const isValidIFSC = (ifsc: string): boolean => {
+    return REGEX.IFSC.test(ifsc);
+};
+
+/**
+ * ============================================
+ * AADHAR VALIDATION
+ * ============================================
+ */
+export const isValidAadhar = (aadhar: string): boolean => {
+    return REGEX.AADHAR.test(aadhar);
+};
+
+/**
+ * ============================================
+ * OTP VALIDATION (6 digits)
+ * ============================================
+ */
+export const isValidOTP = (otp: string): boolean => {
+    return REGEX.OTP.test(otp);
+};
+
+/**
+ * ============================================
+ * USERNAME VALIDATION
+ * ============================================
+ */
+export const isValidUsername = (username: string): boolean => {
+    return REGEX.USERNAME.test(username);
 };
 
 /**
@@ -98,13 +128,40 @@ export const isEmpty = (value: any): boolean => {
 };
 
 export const isNumber = (value: string): boolean => {
-    return /^\d+$/.test(value);
+    return REGEX.NUMBERS.test(value);
 };
 
 export const isAlphabet = (value: string): boolean => {
-    return /^[A-Za-z\s]+$/.test(value);
+    return REGEX.ALPHABETS.test(value);
 };
 
 export const isAlphanumeric = (value: string): boolean => {
-    return /^[A-Za-z0-9\s]+$/.test(value);
+    return REGEX.ALPHANUMERIC.test(value);
+};
+
+/**
+ * ============================================
+ * CREDIT CARD VALIDATION
+ * ============================================
+ */
+export const isValidCreditCard = (cardNumber: string): boolean => {
+    return REGEX.CREDIT_CARD.test(cardNumber);
+};
+
+/**
+ * ============================================
+ * CVV VALIDATION
+ * ============================================
+ */
+export const isValidCVV = (cvv: string): boolean => {
+    return REGEX.CVV.test(cvv);
+};
+
+/**
+ * ============================================
+ * DATE VALIDATION (DD/MM/YYYY)
+ * ============================================
+ */
+export const isValidDate = (date: string): boolean => {
+    return REGEX.DATE.test(date);
 };

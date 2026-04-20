@@ -34,43 +34,43 @@ const LoginScreen = ({ navigation }: any) => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Text style={[styles.title, { color: theme.colors.text }]}>{t('welcome')}</Text>
+    <View style={[styles.container, { backgroundColor: theme.APP_COLORS.background }]}>
+      <Text style={[styles.title, { color: theme.APP_COLORS.text }]}>{t('welcome')}</Text>
 
       <View style={styles.switchContainer}>
-        <Text style={{ color: theme.colors.text }}>Toggle Theme</Text>
+        <Text style={{ color: theme.APP_COLORS.text }}>Toggle Theme</Text>
         <Switch value={isDarkMode} onValueChange={toggleTheme} />
         <TouchableOpacity onPress={toggleLanguage} style={styles.langButton}>
-          <Text style={{ color: theme.colors.primary }}>{i18n.language.toUpperCase()}</Text>
+          <Text style={{ color: theme.APP_COLORS.primary }}>{i18n.language.toUpperCase()}</Text>
         </TouchableOpacity>
       </View>
 
       <TextInput
-        style={[styles.input, { backgroundColor: theme.colors.card, color: theme.colors.text, borderColor: theme.colors.border }]}
+        style={[styles.input, { backgroundColor: theme.APP_COLORS.card, color: theme.APP_COLORS.text, borderColor: theme.APP_COLORS.border }]}
         placeholder={t('email_placeholder')}
-        placeholderTextColor={theme.colors.secondary}
+        placeholderTextColor={theme.APP_COLORS.secondary}
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
         autoCapitalize="none"
       />
       <TextInput
-        style={[styles.input, { backgroundColor: theme.colors.card, color: theme.colors.text, borderColor: theme.colors.border }]}
+        style={[styles.input, { backgroundColor: theme.APP_COLORS.card, color: theme.APP_COLORS.text, borderColor: theme.APP_COLORS.border }]}
         placeholder={t('password_placeholder')}
-        placeholderTextColor={theme.colors.secondary}
+        placeholderTextColor={theme.APP_COLORS.secondary}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
       />
       <TouchableOpacity
-        style={[styles.button, { backgroundColor: theme.colors.primary }]}
+        style={[styles.button, { backgroundColor: theme.APP_COLORS.primary }]}
         onPress={handleLogin}
         disabled={isLoading}
       >
         {isLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>{t('login')}</Text>}
       </TouchableOpacity>
       <TouchableOpacity onPress={() => navigation.navigate(ROUTES.SIGNUP)}>
-        <Text style={[styles.linkText, { color: theme.colors.primary }]}>{t('no_account')}</Text>
+        <Text style={[styles.linkText, { color: theme.APP_COLORS.primary }]}>{t('no_account')}</Text>
       </TouchableOpacity>
     </View>
   );

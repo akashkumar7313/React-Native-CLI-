@@ -4,5 +4,8 @@
     "signup": "Signup",
     "email_placeholder": "Email",
     "password_placeholder": "Password",
-    "no_account": "Don't have an account? Signup"
+    "no_account": "Don't have an account? Signup",
+    "splash_title": "MyApp",
+    "splash_tagline": "Create. Innovate. Inspire.",
+    "splash_loading": "Loading..."
 }
