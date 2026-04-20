@@ -1,19 +1,23 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { LoginScreen } from '../../features/auth';
-import SplashScreen from '../../features/splash/screens/SplashScreen';
+import { useTranslation } from 'react-i18next';
+import { LoginScreen, SignupScreen } from '../../features/auth';
 import OnboardingScreen from '../../features/onboarding/screens/OnboardingScreen';
 import LanguageSelectionScreen from '../../features/language/screens/LanguageSelectionScreen';
+import SplashScreen from '../../features/splash/screens/SplashScreen';
+import OTPScreen from '../../features/auth/screens/OTPScreen';
+import ForgotPasswordScreen from '../../features/auth/screens/ForgotPasswordScreen';
 
 const Stack = createNativeStackNavigator();
 
 // Home Screen
 const HomeScreen = () => {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>🚀 App is Running!</Text>
-      <Text style={styles.subtitle}>Firebase + Redux + Navigation Ready</Text>
+      <Text style={styles.title}>{t('app_running_title')}</Text>
+      <Text style={styles.subtitle}>{t('app_running_subtitle')}</Text>
       <View style={styles.card}>
         <Text style={styles.cardText}>✅ Firebase Notifications Active</Text>
         <Text style={styles.cardText}>✅ Redux Store Configured</Text>
@@ -85,6 +89,21 @@ const RootNavigator = () => {
         name="Login"
         component={LoginScreen}
         options={{ title: 'Login Screen' }}
+      />
+      <Stack.Screen
+        name="ForgotPassword"
+        component={ForgotPasswordScreen}
+        options={{ title: 'Forgot Password', headerShown: true, headerBackTitle: 'Login' }}
+      />
+      <Stack.Screen
+        name="Signup"
+        component={SignupScreen}
+        options={{ title: 'Sign Up', headerShown: true, headerBackTitle: 'Login' }}
+      />
+      <Stack.Screen
+        name="OTPScreen"
+        component={OTPScreen}
+        options={{ title: 'Verify OTP', headerShown: true, headerBackTitle: 'Back' }}
       />
       <Stack.Screen
         name="Home"

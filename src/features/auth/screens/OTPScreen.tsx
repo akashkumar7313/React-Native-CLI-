@@ -1,16 +1,18 @@
 import React from 'react';
 import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import Button from '../../../shared/components/ui/Button/Button';
 
 const OTPScreen = () => {
+    const { t } = useTranslation();
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Enter OTP</Text>
+            <Text style={styles.title}>{t('enter_otp')}</Text>
             <Text style={styles.subtitle}>
-                A 4-digit code has been sent to your phone.
+                {t('otp_subtitle')}
             </Text>
             <TextInput style={styles.input} maxLength={4} keyboardType="number-pad" />
-            <Button title="Verify" onPress={() => console.log('Verify OTP')} />
+            <Button title={t('verify')} onPress={() => console.log('Verify OTP')} />
         </View>
     );
 };

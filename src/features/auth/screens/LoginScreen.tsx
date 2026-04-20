@@ -23,14 +23,14 @@ const LoginScreen = ({ navigation }: any) => {
 
   const handleLogin = async () => {
     if (!email || !password) {
-      Alert.alert('Error', 'Please fill all fields');
+      Alert.alert(t('error'), t('fill_all_fields'));
       return;
     }
     await login(email, password);
   };
 
   const toggleLanguage = () => {
-    i18n.changeLanguage(i18n.language === 'en' ? 'hi' : 'en');
+    i18n.changeLanguage(i18n.language === 'en' ? 'hi' : 'en'); // This can be enhanced for more languages
   };
 
   return (
@@ -38,7 +38,7 @@ const LoginScreen = ({ navigation }: any) => {
       <Text style={[styles.title, { color: theme.APP_COLORS.text }]}>{t('welcome')}</Text>
 
       <View style={styles.switchContainer}>
-        <Text style={{ color: theme.APP_COLORS.text }}>Toggle Theme</Text>
+        <Text style={{ color: theme.APP_COLORS.text }}>{t('toggle_theme')}</Text>
         <Switch value={isDarkMode} onValueChange={toggleTheme} />
         <TouchableOpacity onPress={toggleLanguage} style={styles.langButton}>
           <Text style={{ color: theme.APP_COLORS.primary }}>{i18n.language.toUpperCase()}</Text>
@@ -69,9 +69,14 @@ const LoginScreen = ({ navigation }: any) => {
       >
         {isLoading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>{t('login')}</Text>}
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate(ROUTES.SIGNUP)}>
-        <Text style={[styles.linkText, { color: theme.APP_COLORS.primary }]}>{t('no_account')}</Text>
-      </TouchableOpacity>
+      <View style={styles.linksContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+          <Text style={[styles.linkText, { color: theme.APP_COLORS.secondary }]}>{t('forgot_password_q')}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate(ROUTES.SIGNUP)}>
+          <Text style={[styles.linkText, { color: theme.APP_COLORS.primary }]}>{t('no_account')}</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -84,7 +89,8 @@ const styles = StyleSheet.create({
   input: { padding: 15, borderRadius: 10, marginBottom: 15, borderWidth: 1 },
   button: { padding: 15, borderRadius: 10, alignItems: 'center', marginTop: 10 },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
-  linkText: { marginTop: 20, textAlign: 'center' },
+  linksContainer: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 20, paddingHorizontal: 10 },
+  linkText: { textAlign: 'center' },
 });
 
 export default LoginScreen;

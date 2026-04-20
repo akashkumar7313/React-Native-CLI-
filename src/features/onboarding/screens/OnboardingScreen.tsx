@@ -1,5 +1,5 @@
 // src/features/onboarding/screens/OnboardingScreen.tsx
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
     View,
     Text,
@@ -7,7 +7,6 @@ import {
     StyleSheet,
     Dimensions,
     StatusBar,
-    Image,
     Animated,
 } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
@@ -22,7 +21,6 @@ const { width, height } = Dimensions.get('window');
 // Custom Skip Button with Animation
 // ============================================
 const SkipButton = ({ skipLabel, onPress, isLight }: any) => {
-    const { theme } = useTheme();
     const scaleAnim = useRef(new Animated.Value(1)).current;
 
     const handlePressIn = () => {
@@ -60,7 +58,6 @@ const SkipButton = ({ skipLabel, onPress, isLight }: any) => {
 // Custom Next Button with Animation
 // ============================================
 const NextButton = ({ nextLabel, onPress, isLight }: any) => {
-    const { theme } = useTheme();
     const scaleAnim = useRef(new Animated.Value(1)).current;
 
     const handlePressIn = () => {
@@ -101,7 +98,6 @@ const NextButton = ({ nextLabel, onPress, isLight }: any) => {
 // Custom Done Button with Animation
 // ============================================
 const DoneButton = ({ doneLabel, onPress, isLight }: any) => {
-    const { theme } = useTheme();
     const scaleAnim = useRef(new Animated.Value(1)).current;
 
     const handlePressIn = () => {
@@ -140,7 +136,7 @@ const DoneButton = ({ doneLabel, onPress, isLight }: any) => {
 const DotComponent = ({ selected, isLight }: any) => {
     const scaleAnim = useRef(new Animated.Value(selected ? 1 : 0.5)).current;
 
-    React.useEffect(() => {
+    useEffect(() => {
         Animated.spring(scaleAnim, {
             toValue: selected ? 1 : 0.5,
             useNativeDriver: true,
@@ -153,12 +149,8 @@ const DotComponent = ({ selected, isLight }: any) => {
                 styles.dot,
                 {
                     backgroundColor: selected
-                        ? isLight
-                            ? '#fff'
-                            : '#333'
-                        : isLight
-                            ? 'rgba(255,255,255,0.5)'
-                            : 'rgba(0,0,0,0.3)',
+                        ? isLight ? '#fff' : '#333'
+                        : isLight ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.3)',
                     width: selected ? 24 : 8,
                     transform: [{ scale: scaleAnim }],
                 },
@@ -168,13 +160,13 @@ const DotComponent = ({ selected, isLight }: any) => {
 };
 
 // ============================================
-// Custom Page Component with Animation
+// Custom Page Component with Animation - ✅ FIXED
 // ============================================
-const OnboardingPage = ({ title, subtitle, emoji, backgroundColor, isLast }: any) => {
+const OnboardingPage = ({ title, subtitle, emoji, backgroundColor, isLast, t }: any) => {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const scaleAnim = useRef(new Animated.Value(0.8)).current;
 
-    React.useEffect(() => {
+    useEffect(() => {
         Animated.parallel([
             Animated.timing(fadeAnim, {
                 toValue: 1,
@@ -207,8 +199,9 @@ const OnboardingPage = ({ title, subtitle, emoji, backgroundColor, isLast }: any
                     <Text style={styles.emoji}>{emoji}</Text>
                 </View>
 
-                <Text style={styles.pageTitle}>{title}</Text>
-                <Text style={styles.pageSubtitle}>{subtitle}</Text>
+                {/* ✅ Use translated title and subtitle */}
+                <Text style={styles.pageTitle}>{t(title)}</Text>
+                <Text style={styles.pageSubtitle}>{t(subtitle)}</Text>
 
                 {!isLast && (
                     <View style={styles.indicator}>
@@ -227,9 +220,23 @@ const OnboardingPage = ({ title, subtitle, emoji, backgroundColor, isLast }: any
 // ============================================
 const OnboardingScreen = ({ navigation }: any) => {
     const { theme } = useTheme();
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();  // ✅ Get i18n also
     const onboardingRef = useRef<any>(null);
     const [currentPage, setCurrentPage] = useState(0);
+    const [forceUpdate, setForceUpdate] = useState(0);  // ✅ Force re-render on language change
+
+    // ✅ Force re-render when language changes
+    useEffect(() => {
+        const handleLanguageChange = () => {
+            setForceUpdate(prev => prev + 1);
+        };
+
+        i18n.on('languageChanged', handleLanguageChange);
+
+        return () => {
+            i18n.off('languageChanged', handleLanguageChange);
+        };
+    }, [i18n]);
 
     // Save onboarding completion status
     const handleOnboardingComplete = async () => {
@@ -242,16 +249,17 @@ const OnboardingScreen = ({ navigation }: any) => {
         }
     };
 
-    // Pages configuration
+    // Pages configuration - ✅ Keys for translation
     const pages = [
         {
             backgroundColor: theme.APP_COLORS?.primary || '#007AFF',
             image: (
                 <OnboardingPage
-                    title={t('onboarding_title_1', 'Welcome to MyApp')}
-                    subtitle={t('onboarding_subtitle_1', 'Discover amazing features and improve your experience')}
+                    title="onboarding_title_1"
+                    subtitle="onboarding_subtitle_1"
                     emoji="🚀"
                     backgroundColor={theme.APP_COLORS?.primary || '#007AFF'}
+                    t={t}
                 />
             ),
             title: '',
@@ -261,10 +269,11 @@ const OnboardingScreen = ({ navigation }: any) => {
             backgroundColor: '#6C63FF',
             image: (
                 <OnboardingPage
-                    title={t('onboarding_title_2', 'Fast & Secure')}
-                    subtitle={t('onboarding_subtitle_2', 'Your data is always protected with us')}
+                    title="onboarding_title_2"
+                    subtitle="onboarding_subtitle_2"
                     emoji="✨"
                     backgroundColor="#6C63FF"
+                    t={t}
                 />
             ),
             title: '',
@@ -274,11 +283,12 @@ const OnboardingScreen = ({ navigation }: any) => {
             backgroundColor: '#FF6584',
             image: (
                 <OnboardingPage
-                    title={t('onboarding_title_3', 'Get Started')}
-                    subtitle={t('onboarding_subtitle_3', 'Join thousands of happy users today')}
+                    title="onboarding_title_3"
+                    subtitle="onboarding_subtitle_3"
                     emoji="🎉"
                     backgroundColor="#FF6584"
                     isLast={true}
+                    t={t}
                 />
             ),
             title: '',
@@ -288,6 +298,7 @@ const OnboardingScreen = ({ navigation }: any) => {
 
     return (
         <Onboarding
+            key={forceUpdate}  // ✅ Force re-render on language change
             ref={onboardingRef}
             pages={pages}
             onDone={handleOnboardingComplete}
@@ -313,7 +324,6 @@ const OnboardingScreen = ({ navigation }: any) => {
 // Styles
 // ============================================
 const styles = StyleSheet.create({
-    // Button Styles
     skipButton: {
         paddingHorizontal: 20,
         paddingVertical: 10,
@@ -364,8 +374,6 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         marginHorizontal: 5,
     },
-
-    // Page Styles
     pageContainer: {
         flex: 1,
         justifyContent: 'center',

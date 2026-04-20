@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { STORAGE_KEYS } from '../../shared/utils/constants';
+import { APP_CONSTANTS } from '../../shared/constants';
 
 /**
  * Saves the authentication token to secure storage.
@@ -7,7 +7,7 @@ import { STORAGE_KEYS } from '../../shared/utils/constants';
  */
 export const saveToken = async (token: string): Promise<void> => {
     try {
-        await AsyncStorage.setItem(STORAGE_KEYS.TOKEN, token);
+        await AsyncStorage.setItem(APP_CONSTANTS.STORAGE_KEYS.TOKEN, token);
     } catch (error) {
         console.error('Failed to save the auth token to storage', error);
     }
@@ -19,7 +19,7 @@ export const saveToken = async (token: string): Promise<void> => {
  */
 export const getToken = async (): Promise<string | null> => {
     try {
-        return await AsyncStorage.getItem(STORAGE_KEYS.TOKEN);
+        return await AsyncStorage.getItem(APP_CONSTANTS.STORAGE_KEYS.TOKEN);
     } catch (error) {
         console.error('Failed to fetch the auth token from storage', error);
         return null;
@@ -31,7 +31,7 @@ export const getToken = async (): Promise<string | null> => {
  */
 export const removeToken = async (): Promise<void> => {
     try {
-        await AsyncStorage.removeItem(STORAGE_KEYS.TOKEN);
+        await AsyncStorage.removeItem(APP_CONSTANTS.STORAGE_KEYS.TOKEN);
     } catch (error) {
         console.error('Failed to remove the auth token from storage', error);
     }

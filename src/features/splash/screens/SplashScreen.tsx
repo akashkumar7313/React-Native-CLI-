@@ -68,11 +68,11 @@ const SplashScreen = ({ onFinish }: { onFinish: () => void }) => {
 
                 <Animated.View style={{ opacity: fadeAnim }}>
                     <Text style={[styles.title, { color: theme.APP_COLORS?.white || '#FFF' }]}>
-                        {t('splash_title')}
+                        {t('splash_title', 'Welcome to MyApp')}
                     </Text>
 
                     <Text style={[styles.slogan, { color: theme.APP_COLORS?.text || '#94A3B8' }]}>
-                        {t('splash_tagline')}
+                        {t('splash_tagline', 'Your journey to something amazing starts here.')}
                     </Text>
                 </Animated.View>
             </View>
