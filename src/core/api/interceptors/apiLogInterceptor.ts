@@ -5,8 +5,12 @@ import { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
  * This function is attached to the request interceptor.
  */
 const logOnRequest = (config: AxiosRequestConfig): AxiosRequestConfig => {
-    const { method, url, data } = config;
-    console.log(`🚀 [API Request] ${method?.toUpperCase()} ${url}`);
+    const { method, url, data, baseURL } = config;
+    const fullUrl = `${baseURL || ''}${url || ''}`;
+
+    console.log(`🚀 Method: ${method?.toUpperCase()}`);
+    console.log(`🔗 URL: ${fullUrl}`);
+
     if (data) {
         console.log('📦 Request Body:', JSON.stringify(data, null, 2));
     }
@@ -19,7 +23,11 @@ const logOnRequest = (config: AxiosRequestConfig): AxiosRequestConfig => {
  */
 const logOnResponse = (response: AxiosResponse): AxiosResponse => {
     const { status, config, data } = response;
-    console.log(`✅ [API Response] ${status} ${config.url}`);
+    const fullUrl = `${config.baseURL || ''}${config.url || ''}`;
+
+    console.log(`✅ Status Code: ${status}`);
+    console.log(`🔗 URL: ${fullUrl}`);
+
     if (data) {
         console.log('📦 Response Body:', JSON.stringify(data, null, 2));
     }
@@ -31,24 +39,28 @@ const logOnResponse = (response: AxiosResponse): AxiosResponse => {
  * This function is attached to both request and response error handlers.
  */
 const logOnError = (error: AxiosError): Promise<AxiosError> => {
-    const { message, response, config } = error;
-    console.error(`❌ [API Error] ${config?.method?.toUpperCase()} ${config?.url}`);
+    const { message, response, config, request } = error;
+    const fullUrl = `${config?.baseURL || ''}${config?.url || ''}`;
+
+    console.error(`❌ Method: ${config?.method?.toUpperCase()}`);
+    console.error(`🔗 URL: ${fullUrl}`);
 
     if (response) {
-        // सर्वर ने 2xx रेंज के बाहर स्टेटस कोड के साथ जवाब दिया
-        console.error(`Status: ${response.status}`);
+        // Server responded with a status code outside 2xx (e.g., 422, 500)
+        console.error(`❌ Error Status: ${response.status}`);
         const responseData = response.data as any;
         if (responseData?.message) {
             console.error(`API Message: ${responseData.message}`);
         } else {
-            console.error('Error Data:', JSON.stringify(responseData, null, 2));
+            console.error('📦 Error Data:', JSON.stringify(responseData, null, 2));
         }
-    } else if (error.request) {
-        // रिक्वेस्ट की गई थी लेकिन कोई जवाब नहीं मिला
-        console.error('Error Request:', 'No response received (maybe timeout or network issue)');
+    } else if (request) {
+        // Request was made but no response received (Timeout/Network)
+        console.error('❌ Error: No response received from server.');
+        console.error('📝 Technical Detail: Check if URL is correct or server is down.');
     } else {
-        // रिक्वेस्ट सेट अप करते समय कुछ हुआ
-        console.error('Error Message:', message);
+        // Something happened in setting up the request
+        console.error('❌ Error Message:', message);
     }
 
     return Promise.reject(error);

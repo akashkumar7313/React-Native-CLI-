@@ -16,8 +16,8 @@ const isProduction = false;
  * Changes based on the environment.
  */
 export const BASE_URL = isProduction
-    ? 'https://api.gharse.net/'
-    : 'https://staging.api.lotteryapp.com/v1';
+    ? 'https://staging.api.lotteryapp.com/v1'
+    : 'https://php84.singsys.net/fastfit/public/api/v1';
 
 /**
  * API request timeouts in milliseconds.

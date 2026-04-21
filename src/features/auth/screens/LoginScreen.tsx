@@ -21,6 +21,7 @@ import { useTheme } from '../../../shared/theme/ThemeProvider';
 import LinearGradient from 'react-native-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { APP_IMAGES, APP_CONSTANTS } from '../../../shared/constants';
+import { FirebaseService } from '../../../lib/firebase/messaging';
 
 const { width, height } = Dimensions.get('window');
 
@@ -35,18 +36,34 @@ const LoginScreen = ({ navigation }: any) => {
   const { t, i18n } = useTranslation();
 
   const handleLogin = async () => {
+    // ✅ Validation - Translation use करें
     if (!email || !password) {
       Alert.alert(t('error'), t('fill_all_fields'));
       return;
     }
-    await login(email, password);
+
+    try {
+      // ✅ Step 1: Get FCM Token for push notifications
+      const deviceToken = await FirebaseService.getToken();
+      console.log('Device Token:', deviceToken);
+
+      const token = deviceToken || undefined;
+
+      // ✅ Call login API with device token
+      const result = await login(email, password, false, token);
+
+      if (result?.success === true) {
+        Alert.alert(t('success'), t('login_success'));
+        navigation.replace('Home');
+      } else {
+        Alert.alert(t('error'), result?.message || t('login_failed'));
+      }
+    } catch (error) {
+      console.log('Login error:', error);
+      Alert.alert(t('error'), t('something_went_wrong'));
+    }
   };
 
-  const toggleLanguage = async () => {
-    const newLang = i18n.language === 'en' ? 'hi' : 'en';
-    await i18n.changeLanguage(newLang);
-    await AsyncStorage.setItem(APP_CONSTANTS.STORAGE_KEYS.LANGUAGE, newLang);
-  };
 
   return (
     <LinearGradient
@@ -158,24 +175,6 @@ const LoginScreen = ({ navigation }: any) => {
 
             {/* Footer Section with Controls */}
             <View style={styles.footerSection}>
-              <View style={styles.controlsContainer}>
-                <TouchableOpacity onPress={toggleTheme} style={styles.controlButton}>
-                  <Text style={styles.controlIcon}>{isDarkMode ? '☀️' : '🌙'}</Text>
-                  <Text style={styles.controlText}>
-                    {isDarkMode ? t('light') : t('dark')}
-                  </Text>
-                </TouchableOpacity>
-
-                <View style={styles.divider} />
-
-                <TouchableOpacity onPress={toggleLanguage} style={styles.controlButton}>
-                  <Text style={styles.controlIcon}>🌐</Text>
-                  <Text style={styles.controlText}>
-                    {i18n.language.toUpperCase()}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-
               <Text style={styles.versionText}>{t('version')} 1.0.0</Text>
             </View>
           </ScrollView>
