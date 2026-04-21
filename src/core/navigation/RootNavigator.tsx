@@ -2,26 +2,31 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { APP_CONSTANTS } from '../../shared/constants';
 import { LoginScreen, SignupScreen } from '../../features/auth';
 import OnboardingScreen from '../../features/onboarding/screens/OnboardingScreen';
 import LanguageSelectionScreen from '../../features/language/screens/LanguageSelectionScreen';
 import SplashScreen from '../../features/splash/screens/SplashScreen';
 import OTPScreen from '../../features/auth/screens/OTPScreen';
 import ForgotPasswordScreen from '../../features/auth/screens/ForgotPasswordScreen';
+import { useTheme } from '../../shared/theme/ThemeProvider';
+import AppearanceScreen from '../../features/appearance/screens/AppearanceScreen';
 
 const Stack = createNativeStackNavigator();
 
 // Home Screen
 const HomeScreen = () => {
   const { t } = useTranslation();
+  const { theme } = useTheme();
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{t('app_running_title')}</Text>
-      <Text style={styles.subtitle}>{t('app_running_subtitle')}</Text>
-      <View style={styles.card}>
-        <Text style={styles.cardText}>✅ Firebase Notifications Active</Text>
-        <Text style={styles.cardText}>✅ Redux Store Configured</Text>
-        <Text style={styles.cardText}>✅ Navigation Setup Complete</Text>
+    <View style={[styles.container, { backgroundColor: theme.APP_COLORS.background }]}>
+      <Text style={[styles.title, { color: theme.APP_COLORS.text }]}>{t('app_running_title')}</Text>
+      <Text style={[styles.subtitle, { color: theme.APP_COLORS.secondary }]}>{t('app_running_subtitle')}</Text>
+      <View style={[styles.card, { backgroundColor: theme.APP_COLORS.card }]}>
+        <Text style={styles.cardText}>{t('firebase_notif_active')}</Text>
+        <Text style={styles.cardText}>{t('redux_configured')}</Text>
+        <Text style={styles.cardText}>{t('nav_setup_complete')}</Text>
       </View>
     </View>
   );
@@ -70,15 +75,39 @@ const RootNavigator = () => {
       <Stack.Screen
         name="Splash"
         // eslint-disable-next-line react/no-unstable-nested-components
-        children={({ navigation }) => (
-          <SplashScreen onFinish={() => navigation.replace('LanguageSelection')} />
-        )}
+        children={({ navigation }) => {
+          const handleFinish = async () => {
+            const language = await AsyncStorage.getItem(APP_CONSTANTS.STORAGE_KEYS.LANGUAGE);
+            const themePref = await AsyncStorage.getItem(APP_CONSTANTS.STORAGE_KEYS.THEME);
+            const onboarding = await AsyncStorage.getItem(APP_CONSTANTS.STORAGE_KEYS.ONBOARDING_COMPLETED);
+
+            console.log('[Splash] Language in storage:', language);
+            console.log('[Splash] Theme in storage:', themePref);
+            console.log('[Splash] Onboarding status:', onboarding);
+
+            if (!language) {
+              navigation.replace('LanguageSelection');
+            } else if (!themePref) {
+              navigation.replace('Appearance');
+            } else if (!onboarding) {
+              navigation.replace('Onboarding');
+            } else {
+              navigation.replace('Login');
+            }
+          };
+          return <SplashScreen onFinish={handleFinish} />;
+        }}
         options={{ title: 'Splash Screen' }}
       />
       <Stack.Screen
         name="LanguageSelection"
         component={LanguageSelectionScreen}
         options={{ title: 'Language Selection Screen' }}
+      />
+      <Stack.Screen
+        name="Appearance"
+        component={AppearanceScreen}
+        options={{ title: 'Appearance Screen' }}
       />
       <Stack.Screen
         name="Onboarding"

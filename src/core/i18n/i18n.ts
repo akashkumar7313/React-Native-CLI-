@@ -32,9 +32,6 @@ const languageDetector = {
         }
     },
     init: () => { },
-    cacheUserLanguage: (lng: string) => {
-        AsyncStorage.setItem(APP_CONSTANTS.STORAGE_KEYS.LANGUAGE, lng);
-    },
 };
 
 i18n

@@ -223,20 +223,6 @@ const OnboardingScreen = ({ navigation }: any) => {
     const { t, i18n } = useTranslation();  // ✅ Get i18n also
     const onboardingRef = useRef<any>(null);
     const [currentPage, setCurrentPage] = useState(0);
-    const [forceUpdate, setForceUpdate] = useState(0);  // ✅ Force re-render on language change
-
-    // ✅ Force re-render when language changes
-    useEffect(() => {
-        const handleLanguageChange = () => {
-            setForceUpdate(prev => prev + 1);
-        };
-
-        i18n.on('languageChanged', handleLanguageChange);
-
-        return () => {
-            i18n.off('languageChanged', handleLanguageChange);
-        };
-    }, [i18n]);
 
     // Save onboarding completion status
     const handleOnboardingComplete = async () => {
@@ -298,7 +284,7 @@ const OnboardingScreen = ({ navigation }: any) => {
 
     return (
         <Onboarding
-            key={forceUpdate}  // ✅ Force re-render on language change
+            key={i18n.language}  // ✅ Better way to force re-render on language change
             ref={onboardingRef}
             pages={pages}
             onDone={handleOnboardingComplete}

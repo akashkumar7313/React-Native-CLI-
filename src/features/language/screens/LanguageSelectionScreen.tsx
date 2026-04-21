@@ -93,6 +93,7 @@ const LanguageSelectionScreen = ({ navigation }: any) => {
             await i18n.changeLanguage(langCode);
             setCurrentLang(langCode);
             await AsyncStorage.setItem(APP_CONSTANTS.STORAGE_KEYS.LANGUAGE, langCode);
+            console.log(`[LanguageSelection] Saved language: ${langCode}`);
         } catch (error) {
             console.log('Error changing language:', error);
         } finally {
@@ -101,6 +102,11 @@ const LanguageSelectionScreen = ({ navigation }: any) => {
     };
 
     const handleContinue = async () => {
+        // Ensure language is saved even if user didn't tap a card (using default)
+        if (!await AsyncStorage.getItem(APP_CONSTANTS.STORAGE_KEYS.LANGUAGE)) {
+            await AsyncStorage.setItem(APP_CONSTANTS.STORAGE_KEYS.LANGUAGE, selectedLang);
+        }
+
         // Button press animation
         Animated.sequence([
             Animated.timing(buttonScale, {
@@ -122,23 +128,13 @@ const LanguageSelectionScreen = ({ navigation }: any) => {
             duration: 300,
             useNativeDriver: true,
         }).start(() => {
-            navigation.replace('Onboarding');
+            navigation.replace('Appearance');
         });
     };
 
     const handleSkip = async () => {
         await AsyncStorage.setItem(APP_CONSTANTS.STORAGE_KEYS.LANGUAGE, 'en');
-        navigation.replace('Onboarding');
-    };
-
-    const getWelcomeText = () => {
-        switch (currentLang) {
-            case 'hi': return 'नमस्ते! 👋';
-            case 'es': return '¡Hola! 👋';
-            case 'fr': return 'Bonjour! 👋';
-            case 'ar': return 'مرحباً! 👋';
-            default: return 'Hello! 👋';
-        }
+        navigation.replace('Appearance');
     };
 
     // Split languages into rows of 3
@@ -151,6 +147,7 @@ const LanguageSelectionScreen = ({ navigation }: any) => {
     };
 
     const languageRows = chunkArray(languages, 3);
+    const cardWidth = (width - 48) / 3; // 16px padding on both sides + 16px gap = 48px
 
     return (
         <LinearGradient
@@ -165,7 +162,7 @@ const LanguageSelectionScreen = ({ navigation }: any) => {
                 {isChanging ? (
                     <View style={styles.loadingContainer}>
                         <ActivityIndicator size="large" color="#fff" />
-                        <Text style={styles.loadingText}>Changing language...</Text>
+                        <Text style={styles.loadingText}>{t('changing_language')}</Text>
                     </View>
                 ) : (
                     <Animated.ScrollView
@@ -178,24 +175,16 @@ const LanguageSelectionScreen = ({ navigation }: any) => {
                             <View style={styles.welcomeBadge}>
                                 <Text style={styles.welcomeEmoji}>🌟</Text>
                             </View>
-                            <Text style={styles.welcomeTitle}>{getWelcomeText()}</Text>
+                            <Text style={styles.welcomeTitle}>{t('welcome_greeting')}</Text>
                             <Text style={styles.welcomeSubtitle}>
-                                {currentLang === 'en' ? 'Choose your preferred language to continue' :
-                                    currentLang === 'hi' ? 'जारी रखने के लिए अपनी पसंदीदा भाषा चुनें' :
-                                        currentLang === 'es' ? 'Elige tu idioma preferido para continuar' :
-                                            currentLang === 'fr' ? 'Choisissez votre langue préférée pour continuer' :
-                                                'اختر لغتك المفضلة للمتابعة'}
+                                {t('language_subtitle')}
                             </Text>
                         </Animated.View>
 
                         {/* Language Options - Grid Layout (3 columns) */}
                         <View style={styles.languageContainer}>
                             <Text style={styles.sectionTitle}>
-                                {currentLang === 'en' ? 'Select Language' :
-                                    currentLang === 'hi' ? 'भाषा चुनें' :
-                                        currentLang === 'es' ? 'Seleccionar idioma' :
-                                            currentLang === 'fr' ? 'Choisir la langue' :
-                                                'اختر اللغة'}
+                                {t('select_language')}
                             </Text>
 
                             {languageRows.map((row, rowIndex) => (
@@ -208,6 +197,7 @@ const LanguageSelectionScreen = ({ navigation }: any) => {
                                                 {
                                                     opacity: fadeAnim,
                                                     transform: [{ translateY: slideAnim }],
+                                                    width: cardWidth,
                                                 },
                                             ]}
                                         >
@@ -232,16 +222,12 @@ const LanguageSelectionScreen = ({ navigation }: any) => {
                                             </TouchableOpacity>
                                         </Animated.View>
                                     ))}
-                                    {/* Fill empty spaces if row has less than 3 items */}
-                                    {row.length < 3 && [...Array(3 - row.length)].map((_, i) => (
-                                        <View key={`empty-${i}`} style={styles.languageCardWrapper} />
-                                    ))}
                                 </View>
                             ))}
                         </View>
 
                         {/* Action Buttons */}
-                        <Animated.View style={{ transform: [{ scale: buttonScale }], marginTop: 20 }}>
+                        <Animated.View style={[styles.buttonContainer, { transform: [{ scale: buttonScale }] }]}>
                             <TouchableOpacity
                                 style={styles.continueButton}
                                 onPress={handleContinue}
@@ -254,11 +240,7 @@ const LanguageSelectionScreen = ({ navigation }: any) => {
                                     style={styles.continueGradient}
                                 >
                                     <Text style={styles.continueText}>
-                                        {currentLang === 'en' ? 'Get Started' :
-                                            currentLang === 'hi' ? 'शुरू करें' :
-                                                currentLang === 'es' ? 'Comenzar' :
-                                                    currentLang === 'fr' ? 'Commencer' :
-                                                        'ابدأ'}
+                                        {t('continue')}
                                     </Text>
                                     <Text style={styles.continueArrow}>→</Text>
                                 </LinearGradient>
@@ -270,22 +252,14 @@ const LanguageSelectionScreen = ({ navigation }: any) => {
                                 activeOpacity={0.7}
                             >
                                 <Text style={styles.skipText}>
-                                    {currentLang === 'en' ? 'Skip for now' :
-                                        currentLang === 'hi' ? 'अभी के लिए छोड़ें' :
-                                            currentLang === 'es' ? 'Saltar por ahora' :
-                                                currentLang === 'fr' ? 'Passer pour l\'instant' :
-                                                    'تخطي الآن'}
+                                    {t('skip_now')}
                                 </Text>
                             </TouchableOpacity>
                         </Animated.View>
 
                         {/* Footer */}
                         <Text style={styles.footerText}>
-                            {currentLang === 'en' ? 'You can change language later in settings' :
-                                currentLang === 'hi' ? 'आप बाद में सेटिंग्स में भाषा बदल सकते हैं' :
-                                    currentLang === 'es' ? 'Puedes cambiar el idioma más tarde en configuración' :
-                                        currentLang === 'fr' ? 'Vous pouvez changer la langue plus tard dans les paramètres' :
-                                            'يمكنك تغيير اللغة لاحقًا في الإعدادات'}
+                            {t('change_later_footer')}
                         </Text>
                     </Animated.ScrollView>
                 )}
@@ -305,6 +279,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     scrollContent: {
+        flexGrow: 1,
         paddingHorizontal: 16,
         paddingBottom: 40,
     },
@@ -321,7 +296,7 @@ const styles = StyleSheet.create({
     },
     welcomeSection: {
         alignItems: 'center',
-        marginTop: 40,
+        marginTop: 20,
         marginBottom: 30,
     },
     welcomeBadge: {
@@ -339,7 +314,7 @@ const styles = StyleSheet.create({
         fontSize: 45,
     },
     welcomeTitle: {
-        fontSize: 32,
+        fontSize: 28,
         fontWeight: 'bold',
         color: '#fff',
         marginBottom: 10,
@@ -361,26 +336,27 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     languageContainer: {
-        marginBottom: 20,
+        marginBottom: 30,
     },
     languageRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         marginBottom: 12,
+        gap: 12,
     },
     languageCardWrapper: {
-        width: (width - 60) / 3, // 3 cards per row with padding
-        marginHorizontal: 5,
+        alignItems: 'center',
     },
     languageCard: {
         backgroundColor: 'rgba(255,255,255,0.15)',
         borderRadius: 16,
-        paddingVertical: 10,
+        paddingVertical: 12,
         paddingHorizontal: 8,
         alignItems: 'center',
         borderWidth: 1,
         borderColor: 'rgba(255,255,255,0.2)',
         position: 'relative',
+        width: '100%',
     },
     selectedLanguageCard: {
         backgroundColor: 'rgba(255,255,255,0.3)',
@@ -392,48 +368,52 @@ const styles = StyleSheet.create({
         shadowRadius: 8,
     },
     flagCircle: {
-        width: 45,
-        height: 45,
-        borderRadius: 22.5,
+        width: 50,
+        height: 50,
+        borderRadius: 25,
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 10,
+        marginBottom: 8,
     },
     flagText: {
-        fontSize: 24,
+        fontSize: 28,
     },
     languageCardName: {
-        fontSize: 16,
+        fontSize: 14,
         fontWeight: '600',
         color: '#fff',
         textAlign: 'center',
     },
     languageCardNative: {
-        fontSize: 12,
+        fontSize: 11,
         color: 'rgba(255,255,255,0.7)',
         textAlign: 'center',
         marginTop: 2,
     },
     cardCheckMark: {
         position: 'absolute',
-        top: -8,
-        right: -8,
-        width: 22,
-        height: 22,
-        borderRadius: 11,
+        top: -6,
+        right: -6,
+        width: 20,
+        height: 20,
+        borderRadius: 10,
         backgroundColor: '#4CAF50',
         justifyContent: 'center',
         alignItems: 'center',
-        borderWidth: 2,
+        borderWidth: 1.5,
         borderColor: '#fff',
     },
     cardCheckText: {
         color: '#fff',
-        fontSize: 12,
+        fontSize: 11,
         fontWeight: 'bold',
     },
+    buttonContainer: {
+        marginTop: 10,
+        marginBottom: 20,
+    },
     continueButton: {
-        marginBottom: 16,
+        marginBottom: 12,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
@@ -444,26 +424,26 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 16,
+        paddingVertical: 14,
         borderRadius: 30,
         gap: 8,
     },
     continueText: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         color: '#667eea',
     },
     continueArrow: {
-        fontSize: 20,
+        fontSize: 18,
         fontWeight: 'bold',
         color: '#667eea',
     },
     skipButton: {
         alignItems: 'center',
-        paddingVertical: 12,
+        paddingVertical: 8,
     },
     skipText: {
-        fontSize: 14,
+        fontSize: 13,
         color: 'rgba(255,255,255,0.8)',
         textDecorationLine: 'underline',
     },
@@ -472,7 +452,7 @@ const styles = StyleSheet.create({
         fontSize: 11,
         color: 'rgba(255,255,255,0.6)',
         marginTop: 20,
-        marginBottom: 20,
+        marginBottom: 10,
     },
 });
 
