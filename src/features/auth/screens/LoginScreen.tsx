@@ -45,9 +45,9 @@ const LoginScreen = ({ navigation }: any) => {
     try {
       // ✅ Step 1: Get FCM Token for push notifications
       const deviceToken = await FirebaseService.getToken();
-      console.log('Device Token:', deviceToken);
+      console.log('FCM Token:', deviceToken);
 
-      const token = deviceToken || undefined;
+      const token = deviceToken || '';
 
       // ✅ Call login API with device token
       const result = await login(email, password, false, token);
